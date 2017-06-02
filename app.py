@@ -1,6 +1,10 @@
-from flask import Flask
+from flask import Flask, request
 from datetime import datetime
+from flask.ext.sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
 
 @app.route('/')
 def homepage():
@@ -12,6 +16,11 @@ def homepage():
 
     <img src="http://loremflickr.com/600/400">
     """.format(time=the_time)
+
+@app.route('/images', methods=['POST'])
+def upload_image():
+    data = request.get_json()
+    return data['image']
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
